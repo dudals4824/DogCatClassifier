@@ -29,8 +29,7 @@ print("Number of files in Validation Set:\t\t{}".format(len(data.valid.labels)))
 
 sess = tf.Session()
 
-x = tf.placeholder(tf.float32, shape=[None, 4096], name='x')
-x_img = tf.reshape(x, [-1, 64, 64, 3])
+x = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name='x')
 
 y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
 y_true_cls = tf.argmax(y_true, dimension=1)
@@ -96,7 +95,7 @@ def create_fc_layer(input,
     return layer
 
 
-layer_conv1 = create_cnn_layer(input=x_img,
+layer_conv1 = create_cnn_layer(input=x,
                                          num_input_channels=num_channels,
                                          conv_filter_size=filter_size_conv1,
                                          num_filters=num_filters_conv1)
@@ -156,9 +155,9 @@ def train(num_iteration):
         x_batch, y_true_batch, _, cls_batch = data.train.next_batch(batch_size)
         x_valid_batch, y_valid_batch, _, valid_cls_batch = data.valid.next_batch(batch_size)
 
-        feed_dict_tr = {x_img: x_batch,
+        feed_dict_tr = {x: x_batch,
                         y_true: y_true_batch}
-        feed_dict_val = {x_img: x_valid_batch,
+        feed_dict_val = {x: x_valid_batch,
                          y_true: y_valid_batch}
 
         sess.run(optimizer, feed_dict=feed_dict_tr)
@@ -173,4 +172,4 @@ def train(num_iteration):
     total_iterations += num_iteration
 
 
-train(num_iteration=3000)
+train(num_iteration=30000)
